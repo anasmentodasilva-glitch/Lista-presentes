@@ -1,287 +1,261 @@
-// =============================================
-// CONFIGURAÇÃO — cole aqui a URL do Apps Script
-// =============================================
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwusrNIlbd-0lr7ecYeeZVasrC-an_WKI4M7zXr5YbgXGcyisJiZqVh0wtZjwlIDoDcEA/exec";
+/* ============================================================
+   LISTA DE PRESENTES — APP.JS
+   Integração com Google Apps Script como backend
+   ============================================================ */
 
-// =============================================
-// LISTA DE PRESENTES
-// (a fonte de verdade sobre os nomes dos itens)
-// =============================================
-const GIFT_CATEGORIES = [
-  {
-    icon: "🍽️",
-    name: "Cozinha",
-    items: [
-      "Jogo de copos de vidro",
-      "Jarra de vidro",
-      "Jogo de jarra e copos de vidro",
-      "Jogo de taças de vidro",
-      "Jogo de talheres branco",
-      "Garrafa de café branca",
-      "Jogo de jantar branco",
-      "Jogo de xícaras",
-      "Kit de tigelas claras",
-      "Kit de vasilhas claras",
-      "Kit de utensílios de cozinha",
-      "Potes de vidro para arroz, café e mantimentos",
-      "Escorredor de louça inox",
-      "Jogo de panelas",
-      "Forma de bolo grande",
-      "Forma de bolo média",
-      "Forma de bolo pequena",
-      "Porta-temperos de vidro",
-      "Jogo de sobremesa",
-      "Boleira de vidro",
-      "Jogo de tapetes para cozinha",
-      "Sanduicheira preta",
-      "Batedeira preta",
-      "Air Fryer preta",
-      "Micro-ondas preto",
-      "Jogo americano",
-      "Liquidificador preto",
-    ],
-  },
-  {
-    icon: "🛏️",
-    name: "Quarto",
-    items: [
-      "Jogo de cama (1)",
-      "Jogo de cama (2)",
-      "Jogo de cama (3)",
-      "Edredom casal (1)",
-      "Edredom casal (2)",
-      "Ferro de passar",
-    ],
-  },
-  {
-    icon: "🚿",
-    name: "Banheiro",
-    items: [
-      "Jogo de tapete para banheiro",
-      "Jogo de toalhas (1)",
-      "Jogo de toalhas (2)",
-      "Lixeira inox",
-      "Kit banheiro (porta escova de dentes e sabonete líquido)",
-    ],
-  },
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyOPvmKjNLuhltSjDPtZ3rwClnbi6K6JCLypkfuUXDaCGubweNuTTV2PbpyrdIKmenhaQ/exec';
+
+const GIFTS = [
+  { id: 'c01',  name: 'Jogo de copos de vidro',             category: 'cozinha' },
+  { id: 'c02',  name: 'Jarra de vidro',                     category: 'cozinha' },
+  { id: 'c03',  name: 'Jogo de jarra e copos de vidro',     category: 'cozinha' },
+  { id: 'c04',  name: 'Jogo de taças de vidro',             category: 'cozinha' },
+  { id: 'c05',  name: 'Jogo de talheres branco',            category: 'cozinha' },
+  { id: 'c06',  name: 'Garrafa de café branca',             category: 'cozinha' },
+  { id: 'c07',  name: 'Jogo de jantar branco',              category: 'cozinha' },
+  { id: 'c08',  name: 'Jogo de xícaras',                    category: 'cozinha' },
+  { id: 'c09',  name: 'Kit de tigelas claras',              category: 'cozinha' },
+  { id: 'c10',  name: 'Kit de vasilhas claras',             category: 'cozinha' },
+  { id: 'c11',  name: 'Kit de utensílios de cozinha',       category: 'cozinha' },
+  { id: 'c12',  name: 'Potes de vidro (arroz, café etc.)',  category: 'cozinha' },
+  { id: 'c13',  name: 'Escorredor de louça inox',           category: 'cozinha' },
+  { id: 'c14',  name: 'Jogo de panelas',                    category: 'cozinha' },
+  { id: 'c15',  name: 'Forma de bolo grande',               category: 'cozinha' },
+  { id: 'c16',  name: 'Forma de bolo média',                category: 'cozinha' },
+  { id: 'c17',  name: 'Forma de bolo pequena',              category: 'cozinha' },
+  { id: 'c18',  name: 'Porta-temperos de vidro',            category: 'cozinha' },
+  { id: 'c19',  name: 'Jogo de sobremesa',                  category: 'cozinha' },
+  { id: 'c20',  name: 'Boleira de vidro',                   category: 'cozinha' },
+  { id: 'c21',  name: 'Jogo de tapetes para cozinha',       category: 'cozinha' },
+  { id: 'c22',  name: 'Sanduicheira preta',                 category: 'cozinha' },
+  { id: 'c23',  name: 'Batedeira preta',                    category: 'cozinha' },
+  { id: 'c24',  name: 'Air Fryer preta',                    category: 'cozinha' },
+  { id: 'c25',  name: 'Micro-ondas preto',                  category: 'cozinha' },
+  { id: 'c26',  name: 'Jogo americano',                     category: 'cozinha' },
+  { id: 'c27',  name: 'Liquidificador preto',               category: 'cozinha' },
+  { id: 'q01',  name: 'Jogo de cama (1)',                   category: 'quarto' },
+  { id: 'q02',  name: 'Jogo de cama (2)',                   category: 'quarto' },
+  { id: 'q03',  name: 'Jogo de cama (3)',                   category: 'quarto' },
+  { id: 'q04',  name: 'Edredom casal (1)',                  category: 'quarto' },
+  { id: 'q05',  name: 'Edredom casal (2)',                  category: 'quarto' },
+  { id: 'q06',  name: 'Ferro de passar',                    category: 'quarto' },
+  { id: 'b01',  name: 'Jogo de tapete para banheiro',       category: 'banheiro' },
+  { id: 'b02',  name: 'Jogo de toalhas (1)',                category: 'banheiro' },
+  { id: 'b03',  name: 'Jogo de toalhas (2)',                category: 'banheiro' },
+  { id: 'b04',  name: 'Lixeira inox',                       category: 'banheiro' },
+  { id: 'b05',  name: 'Kit banheiro (porta-escova e sabonete)', category: 'banheiro' },
 ];
 
-// =============================================
-// ESTADO DA APLICAÇÃO
-// =============================================
-let reservations = {}; // { "Nome do item": "Nome do convidado" }
-let selectedItem = null;
+let reservations = {};
+let selectedGift = null;
+let activeCategory = 'all';
 
-// =============================================
-// INICIALIZAÇÃO
-// =============================================
-document.addEventListener("DOMContentLoaded", () => {
-  loadReservations();
+const giftGrid      = document.getElementById('giftGrid');
+const statusLoading = document.getElementById('statusLoading');
+const statusCounts  = document.getElementById('statusCounts');
+const countAvailable= document.getElementById('countAvailable');
+const countReserved = document.getElementById('countReserved');
+const filterBtns    = document.querySelectorAll('.filter-btn');
+const modalOverlay  = document.getElementById('modalOverlay');
+const modalItemName = document.getElementById('modalItemName');
+const guestName     = document.getElementById('guestName');
+const btnConfirm    = document.getElementById('btnConfirm');
+const formError     = document.getElementById('formError');
+const modalClose    = document.getElementById('modalClose');
+const successOverlay= document.getElementById('successOverlay');
+const successMsg    = document.getElementById('successMsg');
+const btnSuccessClose = document.getElementById('btnSuccessClose');
 
-  document.getElementById("modal-close").addEventListener("click", closeModal);
-  document.getElementById("modal-confirm").addEventListener("click", confirmReservation);
-  document.getElementById("success-close").addEventListener("click", closeSuccess);
-
-  document.getElementById("modal-overlay").addEventListener("click", (e) => {
-    if (e.target === document.getElementById("modal-overlay")) closeModal();
-  });
-
-  document.getElementById("guest-name").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") confirmReservation();
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  renderGrid();
+  fetchReservations();
+  bindFilters();
+  bindModal();
 });
 
-// =============================================
-// CARREGAR RESERVAS DA PLANILHA
-// =============================================
-async function loadReservations() {
-  const overlay = document.getElementById("loading-overlay");
-
-  try {
-    const response = await fetch(
-      `${APPS_SCRIPT_URL}?action=getReservations`,
-      { method: "GET" }
-    );
-    const data = await response.json();
-
-    if (data.success) {
-      reservations = data.reservations || {};
-    }
-  } catch (err) {
-    console.error("Erro ao carregar reservas:", err);
-    // Continua mesmo com erro — mostra itens sem reserva
-  }
-
-  renderPage();
-
-  overlay.classList.add("fade-out");
-  setTimeout(() => overlay.remove(), 400);
+function renderGrid() {
+  giftGrid.innerHTML = '';
+  GIFTS.forEach((gift, i) => {
+    const card = document.createElement('div');
+    card.className = 'gift-card';
+    card.dataset.id = gift.id;
+    card.dataset.category = gift.category;
+    card.style.animationDelay = `${i * 18}ms`;
+    card.innerHTML = buildCard(gift);
+    giftGrid.appendChild(card);
+  });
+  applyFilter();
 }
 
-// =============================================
-// RENDERIZAR PÁGINA
-// =============================================
-function renderPage() {
-  const main = document.getElementById("main-content");
-  main.innerHTML = "";
+function buildCard(gift) {
+  const reserved = reservations[gift.id];
+  if (reserved) {
+    return `
+      <span class="card-category">${categoryLabel(gift.category)}</span>
+      <p class="card-name">${gift.name}</p>
+      <div class="card-reserved-badge">
+        <span class="badge-label">Reservado</span>
+        <span class="badge-name">${escHtml(reserved)}</span>
+      </div>`;
+  }
+  return `
+    <span class="card-category">${categoryLabel(gift.category)}</span>
+    <p class="card-name">${gift.name}</p>
+    <button class="btn-reserve" data-id="${gift.id}">Reservar</button>`;
+}
 
-  GIFT_CATEGORIES.forEach((category, catIndex) => {
-    const section = document.createElement("section");
-    section.classList.add("category-section");
-    section.style.animationDelay = `${catIndex * 0.08}s`;
+function refreshCards() {
+  document.querySelectorAll('.gift-card').forEach(card => {
+    const id = card.dataset.id;
+    const gift = GIFTS.find(g => g.id === id);
+    if (!gift) return;
+    card.innerHTML = buildCard(gift);
+    card.classList.toggle('reserved', !!reservations[id]);
+  });
+  document.querySelectorAll('.btn-reserve').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.id));
+  });
+  updateCounts();
+  applyFilter();
+}
 
-    section.innerHTML = `
-      <div class="category-header">
-        <span class="category-icon">${category.icon}</span>
-        <h2 class="category-title">${category.name}</h2>
-        <div class="category-divider"></div>
-      </div>
-      <div class="items-grid" id="grid-${catIndex}"></div>
-    `;
+function updateCounts() {
+  const total = GIFTS.length;
+  const res   = Object.keys(reservations).length;
+  countAvailable.textContent = total - res;
+  countReserved.textContent  = res;
+  statusLoading.style.display = 'none';
+  statusCounts.style.display  = 'block';
+}
 
-    main.appendChild(section);
-
-    const grid = section.querySelector(`#grid-${catIndex}`);
-    category.items.forEach((itemName) => {
-      grid.appendChild(createItemCard(itemName));
+function bindFilters() {
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = btn.dataset.category;
+      applyFilter();
     });
   });
 }
 
-// =============================================
-// CRIAR CARD
-// =============================================
-function createItemCard(itemName) {
-  const card = document.createElement("div");
-  card.classList.add("item-card");
-
-  const reservedBy = reservations[itemName];
-
-  if (reservedBy) {
-    card.classList.add("reserved");
-    card.innerHTML = `
-      <p class="item-name">${itemName}</p>
-      <span class="reserved-badge">Reservado</span>
-      <p class="reserved-by">${reservedBy}</p>
-    `;
-  } else {
-    card.innerHTML = `
-      <p class="item-name">${itemName}</p>
-      <button class="btn-reserve" data-item="${escapeHtml(itemName)}">Reservar</button>
-    `;
-    card.querySelector(".btn-reserve").addEventListener("click", () => openModal(itemName));
-  }
-
-  return card;
+function applyFilter() {
+  document.querySelectorAll('.gift-card').forEach(card => {
+    const match = activeCategory === 'all' || card.dataset.category === activeCategory;
+    card.classList.toggle('hidden', !match);
+  });
 }
 
-// =============================================
-// MODAL — ABRIR / FECHAR
-// =============================================
-function openModal(itemName) {
-  selectedItem = itemName;
-  document.getElementById("modal-item-name").textContent = itemName;
-  document.getElementById("guest-name").value = "";
-  document.getElementById("modal-error").classList.add("hidden");
-  document.getElementById("modal-confirm").disabled = false;
-  document.getElementById("modal-overlay").classList.remove("hidden");
-  setTimeout(() => document.getElementById("guest-name").focus(), 100);
+function bindModal() {
+  document.querySelectorAll('.btn-reserve').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.id));
+  });
+  modalClose.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+  btnConfirm.addEventListener('click', handleConfirm);
+  guestName.addEventListener('keydown', e => { if (e.key === 'Enter') handleConfirm(); });
+  btnSuccessClose.addEventListener('click', () => {
+    successOverlay.classList.remove('open');
+    successOverlay.setAttribute('aria-hidden', 'true');
+  });
+  successOverlay.addEventListener('click', e => {
+    if (e.target === successOverlay) {
+      successOverlay.classList.remove('open');
+      successOverlay.setAttribute('aria-hidden', 'true');
+    }
+  });
+}
+
+function openModal(id) {
+  if (reservations[id]) return;
+  selectedGift = GIFTS.find(g => g.id === id);
+  if (!selectedGift) return;
+  modalItemName.textContent = selectedGift.name;
+  guestName.value = '';
+  formError.textContent = '';
+  btnConfirm.disabled = false;
+  modalOverlay.classList.add('open');
+  modalOverlay.setAttribute('aria-hidden', 'false');
+  setTimeout(() => guestName.focus(), 200);
 }
 
 function closeModal() {
-  document.getElementById("modal-overlay").classList.add("hidden");
-  selectedItem = null;
+  modalOverlay.classList.remove('open');
+  modalOverlay.setAttribute('aria-hidden', 'true');
+  selectedGift = null;
 }
 
-// =============================================
-// CONFIRMAR RESERVA
-// =============================================
-async function confirmReservation() {
-  const nameInput = document.getElementById("guest-name");
-  const name = nameInput.value.trim();
-  const errorEl = document.getElementById("modal-error");
-  const confirmBtn = document.getElementById("modal-confirm");
-
+async function handleConfirm() {
+  const name = guestName.value.trim();
   if (!name) {
-    errorEl.textContent = "Por favor, informe seu nome.";
-    errorEl.classList.remove("hidden");
-    nameInput.focus();
+    formError.textContent = 'Por favor, informe seu nome.';
+    guestName.focus();
     return;
   }
-
-  if (!selectedItem) return;
-
-  // Verifica se foi reservado enquanto o modal estava aberto
-  if (reservations[selectedItem]) {
-    errorEl.textContent = "Este item acabou de ser reservado por outra pessoa.";
-    errorEl.classList.remove("hidden");
-    closeModal();
-    renderPage();
+  if (name.length < 2) {
+    formError.textContent = 'Nome muito curto.';
     return;
   }
-
-  confirmBtn.disabled = true;
-  confirmBtn.textContent = "Salvando…";
-
+  if (reservations[selectedGift.id]) {
+    formError.textContent = 'Este presente já foi reservado.';
+    return;
+  }
+  formError.textContent = '';
+  btnConfirm.disabled = true;
+  btnConfirm.textContent = 'Aguarde…';
   try {
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify({
-        action: "reserve",
-        item: selectedItem,
-        name: name,
-      }),
-    });
+    await saveReservation(selectedGift.id, selectedGift.name, name);
+    reservations[selectedGift.id] = name;
+    refreshCards();
+    closeModal();
+    showSuccess(selectedGift.name, name);
+  } catch (err) {
+    formError.textContent = 'Erro ao salvar. Tente novamente.';
+    console.error(err);
+  } finally {
+    btnConfirm.disabled = false;
+    btnConfirm.textContent = 'Confirmar reserva';
+  }
+}
 
-    const data = await response.json();
+function showSuccess(itemName, name) {
+  successMsg.innerHTML = `<strong>${escHtml(name)}</strong>, sua reserva de<br><em>${escHtml(itemName)}</em><br>foi confirmada com sucesso.`;
+  successOverlay.classList.add('open');
+  successOverlay.setAttribute('aria-hidden', 'false');
+}
 
-    if (data.success) {
-      reservations[selectedItem] = name;
-      closeModal();
-      renderPage();
-      showSuccess(selectedItem, name);
-    } else if (data.alreadyReserved) {
-      reservations[selectedItem] = data.reservedBy || "alguém";
-      closeModal();
-      renderPage();
-      errorEl.textContent = "Este item já foi reservado.";
-      // Não exibimos mais o modal de erro, apenas atualizamos a lista
-    } else {
-      errorEl.textContent = "Ocorreu um erro. Tente novamente.";
-      errorEl.classList.remove("hidden");
-      confirmBtn.disabled = false;
-      confirmBtn.textContent = "Confirmar reserva";
+async function fetchReservations() {
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=list`);
+    const data = await res.json();
+    if (data.reservations) {
+      reservations = {};
+      data.reservations.forEach(r => {
+        if (r.id && r.name) reservations[r.id] = r.name;
+      });
     }
   } catch (err) {
-    console.error(err);
-    errorEl.textContent = "Sem conexão. Verifique sua internet e tente novamente.";
-    errorEl.classList.remove("hidden");
-    confirmBtn.disabled = false;
-    confirmBtn.textContent = "Confirmar reserva";
+    console.warn('Não foi possível carregar reservas:', err);
   }
+  refreshCards();
 }
 
-// =============================================
-// MODAL DE SUCESSO
-// =============================================
-function showSuccess(itemName, guestName) {
-  document.getElementById("success-message").textContent =
-    `${guestName}, obrigada por escolher "${itemName}". Sua reserva foi registrada com carinho.`;
-  document.getElementById("success-overlay").classList.remove("hidden");
+async function saveReservation(id, itemName, guestNameValue) {
+  const payload = { action: 'reserve', id, itemName, guestName: guestNameValue };
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Falha ao salvar.');
+  return data;
 }
 
-function closeSuccess() {
-  document.getElementById("success-overlay").classList.add("hidden");
+function categoryLabel(cat) {
+  return { cozinha: 'Cozinha', quarto: 'Quarto', banheiro: 'Banheiro' }[cat] || cat;
 }
 
-// =============================================
-// UTILITÁRIO
-// =============================================
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
